@@ -43,7 +43,11 @@ const cat = () => {
 
 const dog = () => {
   return fetch("dogs").then((response) => {
-    
+    const dogs = response.data.dogs;
+    const naughtiestDog = dogs.reduce((prev, current) => {
+      return prev.naughty > current.naughty ? prev : current;
+    });
+    return naughtiestDog;
   });
 };
 
@@ -57,7 +61,19 @@ const dog = () => {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
 //
 
-const joke = () => {};
+const joke = () => {
+  const questionPromise = fetch("jokes", "question");
+  const answerPromise = fetch("jokes", "answer");
+
+  return Promise.all([questionPromise, answerPromise]).then((response) => {
+    const questionResponse = response[0];
+    const answerResponse = response[1];
+    return {
+      question: questionResponse.joke,
+      answer: answerResponse.answer,
+    };
+  });
+};
 
 module.exports = {
   food,
